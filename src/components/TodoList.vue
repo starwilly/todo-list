@@ -4,6 +4,7 @@
       <button @click="filterKey='all'">All</button>
       <button @click="filterKey='active'">Active</button>
       <button @click="filterKey='done'">Done</button>
+      <button @click="clearDoneTodos">Clear completed</button>
     </div>
     <p>
     New Todo: <input type="text" v-model="newTodo" @keyup.enter="addTodo">
@@ -11,9 +12,16 @@
     <ul class="todolist__content" v-for="todo in filteredTodos" :key="todo.id">
       <li class="todolist__item" :class="{ 'done': todo.done }">
         <input type="checkbox" v-model="todo.done">
-        {{ todo.title }}
-        <button>Edit</button>
-        <button @click="removeTodo(dodo)">Delete</button>
+        <label @dblclick="editTodo(todo)" v-show="todo !== editingTodo">
+          {{ todo.title }}
+        </label>
+        <input type="text"
+               v-show="todo === editingTodo"
+               v-model="todo.title"
+               @blur="doneEditTodo(todo)"
+               @keyup.enter="doneEditTodo(todo)"
+               @keyup.esc="doneEditTodo(todo)" />
+        <button @click="removeTodo(todo)">Delete</button>
       </li>
     </ul>
   </div>
@@ -34,7 +42,8 @@ export default {
       newTodo: '',
       todos: [
         {id: 1, title: 'test todo', done: true}
-      ]
+      ],
+      editingTodo: null
     }
   },
   computed: {
@@ -57,6 +66,15 @@ export default {
     },
     removeTodo (todo) {
       this.todos.splice(this.todos.indexOf(todo), 1)
+    },
+    editTodo (todo) {
+      this.editingTodo = todo
+    },
+    doneEditTodo (todo) {
+      this.editingTodo = null
+    },
+    clearDoneTodos () {
+      this.todos = filters['active'](this.todos)
     }
   }
 }
