@@ -17,6 +17,7 @@
         </label>
         <input type="text"
                v-show="todo === editingTodo"
+               v-todo-focus="todo === editingTodo"
                v-model="todo.title"
                @blur="doneEditTodo(todo)"
                @keyup.enter="doneEditTodo(todo)"
@@ -75,6 +76,13 @@ export default {
     },
     clearDoneTodos () {
       this.todos = filters['active'](this.todos)
+    }
+  },
+  directives: {
+    todoFocus: (el, binding) => {
+      if (binding.value) {
+        el.focus()
+      }
     }
   }
 }
