@@ -10,25 +10,21 @@
     New Todo: <input type="text" v-model="newTodo" @keyup.enter="addTodo">
     </p>
     <ul class="todolist__content" v-for="todo in filteredTodos" :key="todo.id">
-      <li class="todolist__item" :class="{ 'done': todo.done }">
-        <input type="checkbox" v-model="todo.done">
-        <label @dblclick="editTodo(todo)" v-show="todo !== editingTodo">
-          {{ todo.title }}
-        </label>
-        <input type="text"
-               v-show="todo === editingTodo"
-               v-todo-focus="todo === editingTodo"
-               v-model="todo.title"
-               @blur="doneEditingTodo(todo)"
-               @keyup.enter="doneEditingTodo(todo)"
-               @keyup.esc="cancelEditingTodo(todo)" />
-        <button @click="removeTodo(todo)">Delete</button>
-      </li>
+      <todo-list-item
+        :todo="todo"
+        :editTodo="editTodo"
+        :done-editing-todo="doneEditingTodo"
+        :remove-todo="removeTodo"
+        :cancel-editing-todo="cancelEditingTodo"
+        :is-editing="todo === editingTodo" />
     </ul>
   </div>
 </template>
 
 <script>
+
+import TodoListItem from '@/components/TodoListItem'
+
 const filters = {
   all: todos => todos,
   done: todos => todos.filter(t => t.done),
@@ -37,6 +33,9 @@ const filters = {
 
 export default {
   name: 'TodoList',
+  components: {
+    TodoListItem
+  },
   data () {
     return {
       filterKey: 'all',
@@ -82,13 +81,6 @@ export default {
     },
     clearDoneTodos () {
       this.todos = filters['active'](this.todos)
-    }
-  },
-  directives: {
-    todoFocus: (el, binding) => {
-      if (binding.value) {
-        el.focus()
-      }
     }
   }
 }
