@@ -19,9 +19,9 @@
                v-show="todo === editingTodo"
                v-todo-focus="todo === editingTodo"
                v-model="todo.title"
-               @blur="doneEditTodo(todo)"
-               @keyup.enter="doneEditTodo(todo)"
-               @keyup.esc="doneEditTodo(todo)" />
+               @blur="doneEditingTodo(todo)"
+               @keyup.enter="doneEditingTodo(todo)"
+               @keyup.esc="cancelEditingTodo(todo)" />
         <button @click="removeTodo(todo)">Delete</button>
       </li>
     </ul>
@@ -44,7 +44,8 @@ export default {
       todos: [
         {id: 1, title: 'test todo', done: true}
       ],
-      editingTodo: null
+      editingTodo: null,
+      titleBeforeEditing: ''
     }
   },
   computed: {
@@ -69,9 +70,14 @@ export default {
       this.todos.splice(this.todos.indexOf(todo), 1)
     },
     editTodo (todo) {
+      this.titleBeforeEditing = todo.title
       this.editingTodo = todo
     },
-    doneEditTodo (todo) {
+    cancelEditingTodo (todo) {
+      this.editingTodo = null
+      todo.title = this.titleBeforeEditing
+    },
+    doneEditingTodo (todo) {
       this.editingTodo = null
     },
     clearDoneTodos () {
