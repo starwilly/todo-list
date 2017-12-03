@@ -1,16 +1,42 @@
 <template>
-  <div class="hello">
-    <div class="filters">
-      <button @click="filterKey='all'">All</button>
-      <button @click="filterKey='active'">Active</button>
-      <button @click="filterKey='done'">Done</button>
-      <button @click="clearDoneTodos">Clear completed</button>
+  <div class="hello offset-md-2 col-md-8 mt-5">
+    <div class="row">
+      <div class="btn-group filters mx-auto">
+        <button class="btn btn-light"
+                :class="{active: filterKey==='all'}"
+                @click="filterKey='all'">All</button>
+        <button class="btn btn-light"
+                :class="{active: filterKey==='active'}"
+                @click="filterKey='active'">Active</button>
+        <button class="btn btn-light"
+                :class="{active: filterKey==='done'}"
+                @click="filterKey='done'">Done</button>
+      </div>
     </div>
-    <p>
-    New Todo: <input type="text" v-model="newTodo" @keyup.enter="addTodo">
+    <div class="row justify-content-end toolbar">
+      <button class="btn btn-link"
+        @click="clearDoneTodos"
+        v-show="filterKey ==='done'">Clear completed</button>
+    </div>
+
+    <p class="row">
+      <div class="input-group">
+        <input type="text" class="form-control input--new-todo"
+          placeholder="What needs to be done?"
+          v-model="newTodo"
+          @keyup.enter="addTodo">
+        <span class="input-group-btn">
+          <button class="btn btn-primary" type="button" @click="addTodo">
+            <i class="zmdi zmdi-plus"></i> New Todo
+          </button>
+        </span>
+      </div>
     </p>
-    <ul class="todolist__content" v-for="todo in filteredTodos" :key="todo.id">
+
+    <ul class="list-group todolist__content">
       <todo-list-item
+        v-for="todo in filteredTodos"
+        :key="todo.id"
         :todo="todo"
         :editTodo="editTodo"
         :done-editing-todo="doneEditingTodo"
@@ -18,6 +44,7 @@
         :cancel-editing-todo="cancelEditingTodo"
         :is-editing="todo === editingTodo" />
     </ul>
+
   </div>
 </template>
 
@@ -40,9 +67,7 @@ export default {
     return {
       filterKey: 'all',
       newTodo: '',
-      todos: [
-        {id: 1, title: 'test todo', done: true}
-      ],
+      todos: [],
       editingTodo: null,
       titleBeforeEditing: ''
     }
@@ -88,22 +113,12 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+.input--new-todo::placeholder {
+  color: #cfcfcfcf;
 }
 
-.todolist__item.done {
-  text-decoration: line-through;
+.toolbar {
+  height: 40px;
 }
+
 </style>
